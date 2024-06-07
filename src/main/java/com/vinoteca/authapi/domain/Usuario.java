@@ -20,6 +20,8 @@ public class Usuario {
     @GeneratedValue
     private Long id;
 
+    private String username;
+
     @Column(unique = true)
     private String email;
 

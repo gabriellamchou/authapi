@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vinoteca.authapi.domain.Rol;
 import com.vinoteca.authapi.domain.Usuario;
+import com.vinoteca.authapi.dtos.UsuarioDto;
 import com.vinoteca.authapi.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -28,32 +29,12 @@ public class UsuarioController {
     UsuarioService usuarioService;
     
     @GetMapping("/usuarios")
-    public List<Usuario> findAll() {
-        System.out.println("findAll");
-        return List.of(
-            new Usuario(
-                null, 
-                "Gabriel",
-                "maria@gmail.com",
-                "pass1",
-                Rol.USUARIO),
-            new Usuario(
-                null, 
-                "Gabriel",
-                "gabi@gmail.com",
-                "pass2",
-                Rol.ADMIN),
-            new Usuario(
-                null, 
-                "Patri",
-                "patri@gmail.com",
-                "pass3",
-                Rol.USUARIO)
-        );
+    public List<Usuario> findAllUsuarios() {
+        return this.usuarioService.getUsuarios();
     }
 
     @GetMapping("/usuarios/{id}")
-    public Usuario findById(@PathVariable Long id) {
+    public Usuario findUsuarioById(@PathVariable Long id) {
         System.out.println("findById" + id);
         return new Usuario(
             id, 
@@ -78,5 +59,10 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSaved);
     }
     
-
+    @PostMapping("/login")
+    public UsuarioDto login(@Valid @RequestBody Usuario usuario) {
+        System.out.println(usuario);
+        return this.usuarioService.login(usuario.getEmail(), usuario.getPassword());
+    }
+    
 }

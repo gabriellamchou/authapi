@@ -3,7 +3,6 @@ package com.vinoteca.authapi.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vinoteca.authapi.domain.Rol;
 import com.vinoteca.authapi.domain.Usuario;
-import com.vinoteca.authapi.dtos.UsuarioDto;
+import com.vinoteca.authapi.requests.AuthResponse;
+import com.vinoteca.authapi.requests.LoginRequest;
+import com.vinoteca.authapi.requests.RegistroRequest;
 import com.vinoteca.authapi.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -46,32 +47,25 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<?> addUsuario(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+    public ResponseEntity<AuthResponse> addUsuario(@Valid @RequestBody RegistroRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-        if ( this.usuarioService.getUsuario(usuario.getEmail()) != null) {
+        if ( this.usuarioService.getUsuario(request.getEmail()) != null) {
             return ResponseEntity.badRequest().build();
         }
-        usuario.setRol(Rol.USUARIO);
-        Usuario usuarioSaved = this.usuarioService.addUsuario(usuario);
-        System.out.println(usuarioSaved);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSaved);
+        return ResponseEntity.ok(usuarioService.registro(request));
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-        if ( this.usuarioService.getUsuario(usuario.getEmail()) == null) {
+        if ( this.usuarioService.getUsuario(request.getEmail()) == null) {
             return ResponseEntity.badRequest().build();
         }
-        UsuarioDto usuarioDto = this.usuarioService.login(usuario.getEmail(), usuario.getPassword());
-        if (usuarioDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(usuarioDto);
+        return ResponseEntity.ok(usuarioService.login(request));
     }
     
 }

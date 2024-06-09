@@ -3,7 +3,6 @@ package com.vinoteca.authapi.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ssl.PemSslBundleProperties;
 import org.springframework.stereotype.Service;
 
 import com.vinoteca.authapi.domain.Usuario;
@@ -29,6 +28,9 @@ public class UsuarioService {
 
     public UsuarioDto login(String email, String password) {
         Usuario usuario = this.usuarioRepository.findByEmailAndPassword(email, password).orElse(null);
+        if (usuario == null) {
+            return null;
+        }
         UsuarioDto usuarioDto = new UsuarioDto(usuario.getId(), usuario.getUsername(), usuario.getEmail(), usuario.getRol());
         return usuarioDto;
     }

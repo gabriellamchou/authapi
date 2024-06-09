@@ -60,9 +60,18 @@ public class UsuarioController {
     }
     
     @PostMapping("/login")
-    public UsuarioDto login(@Valid @RequestBody Usuario usuario) {
-        System.out.println(usuario);
-        return this.usuarioService.login(usuario.getEmail(), usuario.getPassword());
+    public ResponseEntity<?> login(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if ( this.usuarioService.getUsuario(usuario.getEmail()) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        UsuarioDto usuarioDto = this.usuarioService.login(usuario.getEmail(), usuario.getPassword());
+        if (usuarioDto == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(usuarioDto);
     }
     
 }

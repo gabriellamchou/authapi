@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vinoteca.authapi.domain.Rol;
 import com.vinoteca.authapi.domain.Usuario;
-import com.vinoteca.authapi.requests.AuthResponse;
-import com.vinoteca.authapi.requests.LoginRequest;
-import com.vinoteca.authapi.requests.RegistroRequest;
+import com.vinoteca.authapi.dtos.AuthResponse;
+import com.vinoteca.authapi.dtos.LoginRequest;
+import com.vinoteca.authapi.dtos.RegistroRequest;
 import com.vinoteca.authapi.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -51,7 +51,7 @@ public class UsuarioController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-        if ( this.usuarioService.getUsuario(request.getEmail()) != null) {
+        if ( this.usuarioService.getUsuario(request.getUsername()) != null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(usuarioService.registro(request));
@@ -62,7 +62,7 @@ public class UsuarioController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
-        if ( this.usuarioService.getUsuario(request.getEmail()) == null) {
+        if ( this.usuarioService.getUsuario(request.getUsername()) == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(usuarioService.login(request));

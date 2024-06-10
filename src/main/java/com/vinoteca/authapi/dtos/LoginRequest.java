@@ -1,4 +1,4 @@
-package com.vinoteca.authapi.requests;
+package com.vinoteca.authapi.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-    String email;
+    String username;
     String password;
 }

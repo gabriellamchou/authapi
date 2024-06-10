@@ -29,15 +29,15 @@ public class Usuario implements UserDetails {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
-
     @Column(unique = true, nullable = false)
-    private String email;
+    private String username;
 
     @Column(nullable = false)
     @Size(min = 6)
     private String password;
+    
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     private Rol rol;

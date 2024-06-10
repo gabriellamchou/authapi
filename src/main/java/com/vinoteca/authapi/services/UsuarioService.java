@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.vinoteca.authapi.domain.Rol;
 import com.vinoteca.authapi.domain.Usuario;
+import com.vinoteca.authapi.dtos.AuthResponse;
+import com.vinoteca.authapi.dtos.LoginRequest;
+import com.vinoteca.authapi.dtos.RegistroRequest;
 import com.vinoteca.authapi.repositories.UsuarioRepository;
-import com.vinoteca.authapi.requests.AuthResponse;
-import com.vinoteca.authapi.requests.LoginRequest;
-import com.vinoteca.authapi.requests.RegistroRequest;
 
 @Service
 public class UsuarioService {
@@ -39,12 +39,12 @@ public class UsuarioService {
     }
 
     public Usuario getUsuario(String email) {
-        return this.usuarioRepository.findByEmail(email).orElse(null);
+        return this.usuarioRepository.findByUsername(email).orElse(null);
     }
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        UserDetails usuario = usuarioRepository.findByEmail(request.getEmail()).orElseThrow();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserDetails usuario = usuarioRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(usuario);
         return AuthResponse.builder()
             .token(token)
@@ -53,9 +53,9 @@ public class UsuarioService {
 
     public AuthResponse registro(RegistroRequest request) {
         Usuario usuario = Usuario.builder()
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
             .username(request.getUsername())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .nickname(request.getNickname())
             .rol(Rol.USUARIO)
             .build();
 

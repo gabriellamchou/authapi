@@ -1,4 +1,4 @@
-package com.vinoteca.authapi.requests;
+package com.vinoteca.authapi.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
